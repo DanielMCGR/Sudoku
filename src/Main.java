@@ -36,7 +36,7 @@ public class Main {
 
         //The default board is generated
         board = GetBoard("040805200020040050500000004090003120106078003370904080000006700008359010019007600");
-        SetDefault();
+        isDefault = SetDefault();
         //System.out.print(Arrays.toString(isDefault)); //To make sure the command is working properly
         System.out.println(" ");
 
@@ -113,15 +113,18 @@ public class Main {
     }
 
     //the array isDefault stores whether or not the number in a position was one of the "starting" ones, that cant be changed
-    static void SetDefault() {
+    //made slight changes to this so it would work easily in other classes
+    public static boolean[] SetDefault() {
+        boolean[] list = new boolean[81];
         for (int i = 0; i < 81; i++){
             if(board[i]==0){
-                isDefault[i]=false;
+                list[i]=false;
             }
             if(board[i]!=0){
-                isDefault[i]=true;
+                list[i]=true;
             }
         }
+        return list;
     }
 
     //prints the board according to the board array
