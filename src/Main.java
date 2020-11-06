@@ -1,32 +1,49 @@
-import java.util.Scanner;
+import java.util.*;
 
 public class Main {
     static Scanner input;
     static int[] board;
+    static boolean[] isDefault;
 
     public static void main(String[] args) {
         input = new Scanner(System.in);
         // the sudoku board has 9x9 (81), being counted from top left to bottom right
         board = new int[81];
+        isDefault = new boolean[81]; //
+        boolean start = false;
 
         //This is for when the game starts
-        /*System.out.println("Welcome to the sudoku game");
+        System.out.println("Welcome to the sudoku game");
         System.out.println("You can type 'help' at any given time to get instructions");
-        System.out.println("You can type 'start' to begin the game");*/
+        System.out.println("You can type 'start' to begin the game");
+        while (!start) {
+            System.out.println("Please input a command:");
+            String first_input =input.nextLine().toLowerCase();
+            switch(first_input) {
+                case "help":
+                    help();
+                    break;
+                case "start": start=true;
+                    break;
+                case "example": printExampleBoard();
+                    break;
+                default: {System.out.println("That command is not recognized, here is a list of commands:");
+                    System.out.println("Help; Start; Example"); }
+                    break;
+            }
+        }
 
         //This is just to test out how a board looks like
         board = GetBoard("040805200020040050500000004090003120106078003370904080000006700008359010019007600");
-        System.out.println("Example board:");
-        printExampleBoard();
+        SetDefault();
         System.out.println(" ");
         System.out.println(" ");
         System.out.println("Test board:");
         printBoard();
-        // String str= input.nextLine();//reads string
-
     }
 
-    //Simple mechanism to input a board, by typing all numbers from top left to bottom right in order (no number is 0)
+
+    //Simple mechanism to input a board, by typing all numbers from top left to bottom right in order (if there is no number, it's set as 0 (which can't be used in sudoku )
     //since this isn't a fast or reliable method, it will just be used for testing
     //example: 040805200020040050500000004090003120106078003370904080000006700008359010019007600
     public static int[] GetBoard(String conv) {
@@ -37,6 +54,19 @@ public class Main {
         return num;
     }
 
+    //the array isDefault stores whether or not the number in a position was one of the "starting" ones, that cant be changed
+    static void SetDefault() {
+        for (int i = 0; i < 81; i++){
+            if(board[i]==0){
+                isDefault[i]=false;
+            }
+            if(board[i]!=0){
+                isDefault[i]=true;
+            }
+        }
+    }
+
+    //prints the board according to the board array
     static void printBoard() {
         System.out.println("┌---┬---┬---┬---┬---┬---┬---┬---┬---┐");
         System.out.println("| " + board[0] + " | " + board[1] + " | " + board[2] + " | " + board[3] + " | " + board[4] + " | " + board[5] + " | " + board[6] + " | " + board[7] + " | " + board[8] + " |");
@@ -59,6 +89,7 @@ public class Main {
         System.out.println("└---┴---┴---┴---┴---┴---┴---┴---┴---┘");
     }
 
+    //just an example board useful for understanding where each array position is
     static void printExampleBoard() {
         System.out.println("┌----┬----┬----┬----┬----┬----┬----┬----┬----┐");
         System.out.println("|  0 |  1 |  2 |  3 |  4 |  5 |  6 |  7 |  8 |");
@@ -80,4 +111,7 @@ public class Main {
         System.out.println("| 72 | 73 | 74 | 75 | 76 | 77 | 78 | 79 | 80 |");
         System.out.println("└----┴----┴----┴----┴----┴----┴----┴----┴----┘");
         }
+    static void help() {
+        System.out.println("The help command is under construction");
+    }
 }
