@@ -11,12 +11,13 @@ public class Main {
         board = new int[81];
         isDefault = new boolean[81]; //
         boolean start = false;
+        boolean win = false;
 
         //This is for when the game starts
-        System.out.println("Welcome to the sudoku game");
+        System.out.println("Welcome to the sudoku game. A default board will be used");
         System.out.println("You can type 'help' at any given time to get instructions");
         System.out.println("You can type 'start' to begin the game");
-        while (!start) {
+        while (!start) { //commands before the beginning of the game
             System.out.println("Please input a command:");
             String first_input =input.nextLine().toLowerCase();
             switch(first_input) {
@@ -33,19 +34,76 @@ public class Main {
             }
         }
 
-        //This is just to test out how a board looks like
+        //The default board is generated
         board = GetBoard("040805200020040050500000004090003120106078003370904080000006700008359010019007600");
         SetDefault();
+        //System.out.print(Arrays.toString(isDefault)); //To make sure the command is working properly
         System.out.println(" ");
-        System.out.println(" ");
-        System.out.println("Test board:");
-        printBoard();
+
+        while (!win) { //The game has started here, using the default board
+            System.out.println(" ");
+            System.out.println("Current State of the board:");
+            printBoard();
+            System.out.println(" ");
+            System.out.println("Select the position to change");
+            int pos =input.nextInt();
+            if(pos<0||pos>80) {
+                System.out.println("The selected position does not exist");
+            } else if (isDefault[pos]==true){
+                System.out.println("The selected position cannot be change as it is a starter one, please try again");
+            }else {
+                System.out.println("Select the number for that position (If there was a number there, it will be changed)");
+                int num =input.nextInt();
+                board[pos]=num;
+            }
+            if(BoardIsComplete()) {
+                win=true;
+                System.out.println("Congratulations. You Won!");
+                System.out.println("Final Board: "+Arrays.toString(board));
+            }
+        }
     }
 
+    public static boolean BoardIsComplete(){
+        boolean isComplete=true;
+        for (int i = 0; i < 9; i++){
+            if(!RowIsComplete(i)){
+                isComplete=false;
+            }
+            if(!ColumnIsComplete(i)){
+                isComplete=false;
+            }
+        }
+        return isComplete;
+    }
+
+    public static boolean RowIsComplete(int num){
+        int soma=0;
+        for (int i = 0; i < 9; i++){
+            soma=board[i+(num*9)]+soma;
+        }
+        if(soma==45){ //adding all numbers from 1 to 9 = 45
+            return true;
+        } else {
+            return false;
+        }
+    }
+    public static boolean ColumnIsComplete(int num){
+        int soma=0;
+        for (int i = 0; i < 9; i++){
+            soma=board[i*9+(num)]+soma;
+        }
+        if(soma==45){ //adding all numbers from 1 to 9 = 45
+            return true;
+        } else {
+            return false;
+        }
+    }
 
     //Simple mechanism to input a board, by typing all numbers from top left to bottom right in order (if there is no number, it's set as 0 (which can't be used in sudoku )
     //since this isn't a fast or reliable method, it will just be used for testing
     //example: 040805200020040050500000004090003120106078003370904080000006700008359010019007600
+    //Final Board: [9, 4, 7, 8, 3, 5, 2, 6, 1, 6, 2, 3, 7, 4, 1, 8, 5, 9, 5, 8, 1, 6, 9, 2, 3, 7, 4, 8, 9, 4, 5, 6, 3, 1, 2, 7, 1, 5, 6, 2, 7, 8, 9, 4, 3, 3, 7, 2, 9, 1, 4, 5, 8, 6, 4, 3, 5, 1, 2, 6, 7, 9, 8, 7, 6, 8, 3, 5, 9, 4, 1, 2, 2, 1, 9, 4, 8, 7, 6, 3, 5]
     public static int[] GetBoard(String conv) {
         int[] num = new int[conv.length()];
         for (int i = 0; i < conv.length(); i++){
