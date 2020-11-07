@@ -20,17 +20,14 @@ public class Main {
         while (!start) { //commands before the beginning of the game
             System.out.println("Please input a command:");
             String first_input =input.nextLine().toLowerCase();
-            switch(first_input) {
-                case "help":
-                    help();
-                    break;
-                case "start": start=true;
-                    break;
-                case "example": printExampleBoard();
-                    break;
-                default: {System.out.println("That command is not recognized, here is a list of commands:");
-                    System.out.println("Help; Start; Example"); }
-                    break;
+            switch (first_input) {
+                case "help" -> help();
+                case "start" -> start = true;
+                case "example" -> printExampleBoard();
+                default -> {
+                    System.out.println("That command is not recognized, here is a list of commands:");
+                    System.out.println("Help; Start; Example");
+                }
             }
         }
 
@@ -49,14 +46,14 @@ public class Main {
             int pos =input.nextInt();
             if(pos<0||pos>80) {
                 System.out.println("The selected position does not exist");
-            } else if (isDefault[pos]==true){
+            } else if (isDefault[pos]){
                 System.out.println("The selected position cannot be change as it is a starter one, please try again");
             }else {
                 System.out.println("Select the number for that position (If there was a number there, it will be changed)");
                 int num =input.nextInt();
                 board[pos]=num;
             }
-            if(BoardIsComplete()) {
+            if(BoardIsComplete(board)) {
                 win=true;
                 System.out.println("Congratulations. You Won!");
                 System.out.println("Final Board: "+Arrays.toString(board));
@@ -64,40 +61,32 @@ public class Main {
         }
     }
 
-    public static boolean BoardIsComplete(){
+    public static boolean BoardIsComplete(int[] board){
         boolean isComplete=true;
         for (int i = 0; i < 9; i++){
-            if(!RowIsComplete(i)){
+            if(!RowIsComplete(i, board)){
                 isComplete=false;
             }
-            if(!ColumnIsComplete(i)){
+            if(!ColumnIsComplete(i, board)){
                 isComplete=false;
             }
         }
         return isComplete;
     }
 
-    public static boolean RowIsComplete(int num){
+    public static boolean RowIsComplete(int num, int[] board){
         int soma=0;
         for (int i = 0; i < 9; i++){
             soma=board[i+(num*9)]+soma;
         }
-        if(soma==45){ //adding all numbers from 1 to 9 = 45
-            return true;
-        } else {
-            return false;
-        }
+        return soma==45; //adding all numbers from 1 to 9 = 45
     }
-    public static boolean ColumnIsComplete(int num){
+    public static boolean ColumnIsComplete(int num, int[] board){
         int soma=0;
         for (int i = 0; i < 9; i++){
             soma=board[i*9+(num)]+soma;
         }
-        if(soma==45){ //adding all numbers from 1 to 9 = 45
-            return true;
-        } else {
-            return false;
-        }
+        return soma==45; //adding all numbers from 1 to 9 = 45
     }
 
     //Simple mechanism to input a board, by typing all numbers from top left to bottom right in order (if there is no number, it's set as 0 (which can't be used in sudoku )
