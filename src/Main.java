@@ -9,14 +9,54 @@ public class Main {
         input = new Scanner(System.in);
         // the sudoku board has 9x9 (81), being counted from top left to bottom right
         board = new int[81];
-        isDefault = new boolean[81]; //
+        // for each of the positions this stores a boolean telling us if it is one of the positions that was filled in the initial board
+        isDefault = new boolean[81];
+        // whether or not the game has started, if it has ended (the player has won), and if the input is valid in the first prompt
         boolean start = false;
         boolean win = false;
+        boolean valid = false;
+        boolean isAuto = false;
 
         //This is for when the game starts
-        System.out.println("Welcome to the sudoku game. A default board will be used");
-        System.out.println("You can type 'help' at any given time to get instructions");
-        System.out.println("You can type 'start' to begin the game");
+        System.out.println("Welcome to the sudoku game. You can type help at any time to get help.");
+        while(!valid){
+            System.out.println();
+            System.out.println("Would you like to use a default board or input one yourself? (type either default or input)");
+            String first_input =input.nextLine().toLowerCase();
+            switch (first_input) {
+                case "help" -> help();
+                case "default" -> {
+                    board = GetBoard("040805200020040050500000004090003120106078003370904080000006700008359010019007600");
+                    printBoard();
+                    valid=true;
+
+                    }
+                case "input" -> {
+                    while(!valid) {
+                        System.out.println("Please type the numbers on the board (From top left to bottom right, if there is a blank space count it as a zero):");
+                        String input_board =input.nextLine().toLowerCase();
+                        if(ValidBoard(input_board)) {
+                            board = GetBoard(input_board);
+                            printBoard();
+                            valid=true;
+                        } else if(input_board.equals("leave")){
+                            System.out.println("Leaving");
+                            break;
+                        } else {
+                            System.out.println("That board is not valid, please try again or type 'leave' to leave");
+                        }
+                    }
+
+                }
+                default -> {
+                    System.out.println("That command is not recognized, here is a list of commands you can input:");
+                    System.out.println("Help; Default; Input");
+                }
+            }
+        }
+
+        System.out.println();
+        System.out.println("You can type 'start' to begin the game or example to see an example board (with the position numbers)");
         while (!start) { //commands before the beginning of the game
             System.out.println("Please input a command:");
             String first_input =input.nextLine().toLowerCase();
@@ -24,24 +64,29 @@ public class Main {
                 case "help" -> help();
                 case "start" -> start = true;
                 case "example" -> printExampleBoard();
+                case "board" -> printBoard();
+                case "autosolve1" -> {AutoSolver.main(); isAuto=true; start=true;}
+                case "autosolve2" -> {SolveBacktracking.main(); isAuto=true; start=true;}
                 default -> {
                     System.out.println("That command is not recognized, here is a list of commands:");
-                    System.out.println("Help; Start; Example");
+                    System.out.println("Help; Start; Example; Board; AutoSolve1; AutoSolve2");
                 }
             }
         }
 
-        //The default board is generated
-        board = GetBoard("040805200020040050500000004090003120106078003370904080000006700008359010019007600");
+        //The booleans for the default positions are generated, the board has already been set by the user
         isDefault = SetDefault();
         //System.out.print(Arrays.toString(isDefault)); //To make sure the command is working properly
-        System.out.println(" ");
+        System.out.println();
 
         while (!win) { //The game has started here, using the default board
-            System.out.println(" ");
-            System.out.println("Current State of the board:");
+            if(isAuto) {
+                System.out.println("The board as been Auto Completed.");
+                printBoard();
+                break;
+            }
             printBoard();
-            System.out.println(" ");
+            System.out.println();
             System.out.println("Select the position to change");
             int pos =input.nextInt();
             if(pos<0||pos>80) {
@@ -49,16 +94,35 @@ public class Main {
             } else if (isDefault[pos]){
                 System.out.println("The selected position cannot be change as it is a starter one, please try again");
             }else {
-                System.out.println("Select the number for that position (If there was a number there, it will be changed)");
+                System.out.println("Select the value for position " + pos + " (The current value for it is " + board[pos] + " )");
                 int num =input.nextInt();
-                board[pos]=num;
+                if(num<1||pos>9) {
+                    System.out.println("The selected value is not in range (1 to 9)");
+                } else {
+                    board[pos]=num;
+                    System.out.println("The value for position " + pos + " has been changed to " + num);
+                }
             }
             if(BoardIsComplete(board)) {
                 win=true;
                 System.out.println("Congratulations. You Won!");
-                System.out.println("Final Board: "+Arrays.toString(board));
+                //System.out.println("Final Board: "+Arrays.toString(board));
+                printBoard();
             }
         }
+        System.out.println();
+        System.out.println("The game is now over. Type 'again' to play again, or anything else to leave");
+        String first_input =input.nextLine().toLowerCase();
+        if ("again".equals(first_input)) {
+            main(null);
+        } else {
+            System.out.println("Goodbye");
+        }
+
+    }
+
+    public static boolean ValidBoard(String board){
+        return GetBoard(board).length == 81 && isInteger(board);
     }
 
     public static boolean BoardIsComplete(int[] board){
@@ -101,6 +165,17 @@ public class Main {
         return num;
     }
 
+    //used to make sure the input string can be converted to an int and to avoid errors, might delete later
+    public static boolean isInteger( String input ) {
+        try {
+            Integer.parseInt( input );
+            return true;
+        }
+        catch( Exception e ) {
+            return false;
+        }
+    }
+
     //the array isDefault stores whether or not the number in a position was one of the "starting" ones, that cant be changed
     //made slight changes to this so it would work easily in other classes
     public static boolean[] SetDefault() {
@@ -118,6 +193,8 @@ public class Main {
 
     //prints the board according to the board array
     static void printBoard() {
+        System.out.println("This is the current state of the board:");
+        System.out.println();
         System.out.println("┌---┬---┬---┬---┬---┬---┬---┬---┬---┐");
         System.out.println("| " + board[0] + " | " + board[1] + " | " + board[2] + " | " + board[3] + " | " + board[4] + " | " + board[5] + " | " + board[6] + " | " + board[7] + " | " + board[8] + " |");
         System.out.println("|---┼---┼---┼---┼---┼---┼---┼---┼---|");
@@ -141,6 +218,8 @@ public class Main {
 
     //just an example board useful for understanding where each array position is
     static void printExampleBoard() {
+        System.out.println("This is the example board:");
+        System.out.println();
         System.out.println("┌----┬----┬----┬----┬----┬----┬----┬----┬----┐");
         System.out.println("|  0 |  1 |  2 |  3 |  4 |  5 |  6 |  7 |  8 |");
         System.out.println("|----┼----┼----┼----┼----┼----┼----┼----┼----|");

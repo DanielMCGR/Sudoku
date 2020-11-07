@@ -2,24 +2,25 @@ import java.util.*;
 
 public class SolveBacktracking {
 
-    public static void main(String[] args) {
+    public static void main() {
         //this is a copy of the code from AutoSolver
-        Main.board=new int[81];
-        Main.board = Main.GetBoard("040805200020040050500000004090003120106078003370904080000006700008359010019007600");
-        Main.isDefault = Main.SetDefault();
+        //Main.board=new int[81];
+        //Main.board = Main.GetBoard("040805200020040050500000004090003120106078003370904080000006700008359010019007600");
+        //Main.isDefault = Main.SetDefault();
         //System.out.print(Arrays.toString(isDefault)); //To make sure the command is working properly
-        System.out.println("This is the base board");
-        Main.printBoard();
-        System.out.println(" ");
-        System.out.println(" ");
-        System.out.println("This is the completed board");
-        if (SolveBacktracking(Main.board))
-        {
-            Main.printBoard();
-        }
-        System.out.println(" ");
+        //System.out.println("This is the base board");
+        //Main.printBoard();
+        //System.out.println(" ");
+        //System.out.println(" ");
+        //System.out.println("This is the completed board");
+        //if (SolveBacktracking(Main.board))
+        //{
+        //    Main.printBoard();
+        //}
+        //System.out.println(" ");
         //this is just to check if it is the same as the manual solution
-        System.out.println("[9, 4, 7, 8, 3, 5, 2, 6, 1, 6, 2, 3, 7, 4, 1, 8, 5, 9, 5, 8, 1, 6, 9, 2, 3, 7, 4, 8, 9, 4, 5, 6, 3, 1, 2, 7, 1, 5, 6, 2, 7, 8, 9, 4, 3, 3, 7, 2, 9, 1, 4, 5, 8, 6, 4, 3, 5, 1, 2, 6, 7, 9, 8, 7, 6, 8, 3, 5, 9, 4, 1, 2, 2, 1, 9, 4, 8, 7, 6, 3, 5]".equals(Arrays.toString(Main.board)));
+        //System.out.println("[9, 4, 7, 8, 3, 5, 2, 6, 1, 6, 2, 3, 7, 4, 1, 8, 5, 9, 5, 8, 1, 6, 9, 2, 3, 7, 4, 8, 9, 4, 5, 6, 3, 1, 2, 7, 1, 5, 6, 2, 7, 8, 9, 4, 3, 3, 7, 2, 9, 1, 4, 5, 8, 6, 4, 3, 5, 1, 2, 6, 7, 9, 8, 7, 6, 8, 3, 5, 9, 4, 1, 2, 2, 1, 9, 4, 8, 7, 6, 3, 5]".equals(Arrays.toString(Main.board)));
+        SolveBacktracking(Main.board);
     }
 
     public static boolean SolveBacktracking(int[] board) {
@@ -46,8 +47,6 @@ public class SolveBacktracking {
             }
         return false;
     }
-
-    // System.out.println("Placeholder");
 
     //based on AutoSolver class PossibleNumber function
     public static boolean IsPossible(int pos, int Val) {
